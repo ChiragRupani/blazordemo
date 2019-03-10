@@ -29,6 +29,38 @@
           (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
           l.hash
       );
+
+      document.addEventListener(
+        'DOMContentLoaded',
+        function() {
+          var supported = (() => {
+            try {
+              if (
+                typeof WebAssembly === 'object' &&
+                typeof WebAssembly.instantiate === 'function'
+              ) {
+                const module = new WebAssembly.Module(
+                  Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00)
+                );
+                if (module instanceof WebAssembly.Module)
+                  return (
+                    new WebAssembly.Instance(module) instanceof
+                    WebAssembly.Instance
+                  );
+              }
+            } catch (e) {}
+            return false;
+          })();
+
+          if (!supported) {
+            document.getElementsByTagName(
+              'app',
+              'Sorry, Your browser is not supported. It requires Web Assembly support. Please use newer version of your browser.'
+            );
+          }
+        },
+        false
+      );
     </script>
   </head>
   <body>
